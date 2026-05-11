@@ -12,7 +12,6 @@
 <style>
 
 :root{
-
   --bg:#07111f;
   --bg2:#0c1d36;
 
@@ -20,17 +19,15 @@
   --border:rgba(255,255,255,0.08);
 
   --green:#2ecc71;
-  --green2:#27ae60;
-
   --blue:#3498db;
   --orange:#f39c12;
   --violet:#9b59b6;
+  --gray:#95a5a6;
 
   --white:#f5f7ff;
   --muted:#8ea7c9;
 
   --shadow:0 0 25px rgba(46,204,113,.12);
-
 }
 
 *{
@@ -40,7 +37,6 @@
 }
 
 body{
-
   background:
     radial-gradient(circle at top left,#173865 0%,transparent 28%),
     radial-gradient(circle at bottom right,#10284c 0%,transparent 28%),
@@ -53,7 +49,6 @@ body{
 }
 
 body::before{
-
   content:'';
   position:fixed;
   inset:0;
@@ -63,12 +58,10 @@ body::before{
     linear-gradient(90deg, rgba(46,204,113,.03) 1px, transparent 1px);
 
   background-size:42px 42px;
-
   pointer-events:none;
 }
 
 .container{
-
   width:min(1400px,95%);
   margin:auto;
   padding:2rem 0 4rem;
@@ -77,13 +70,11 @@ body::before{
 }
 
 header{
-
-  margin-bottom:2rem;
   text-align:center;
+  margin-bottom:2rem;
 }
 
 .tag{
-
   display:inline-block;
 
   border:1px solid rgba(46,204,113,.4);
@@ -91,23 +82,18 @@ header{
   color:var(--green);
 
   font-family:'Space Mono',monospace;
-
   font-size:11px;
   letter-spacing:.14em;
 
   padding:5px 12px;
-
   border-radius:5px;
 
   margin-bottom:1rem;
 }
 
 h1{
-
   font-size:clamp(2rem,5vw,4rem);
-
   line-height:1.05;
-
   margin-bottom:1rem;
 }
 
@@ -116,30 +102,23 @@ h1 span{
 }
 
 .subtitle{
-
   color:var(--muted);
-
   font-size:15px;
 }
 
 .layout{
-
   display:grid;
-
   grid-template-columns:1fr 360px;
-
   gap:1.5rem;
 }
 
 @media(max-width:1100px){
-
   .layout{
     grid-template-columns:1fr;
   }
 }
 
 .card{
-
   background:var(--card);
 
   border:1px solid var(--border);
@@ -154,16 +133,13 @@ h1 span{
 }
 
 .section{
-
   display:flex;
   align-items:center;
   gap:1rem;
-
   margin-bottom:1rem;
 }
 
 .section-num{
-
   font-family:'Space Mono',monospace;
 
   color:var(--green);
@@ -180,12 +156,10 @@ h1 span{
 }
 
 .section h2{
-
   font-size:18px;
 }
 
 canvas{
-
   width:100%;
   display:block;
 
@@ -206,7 +180,6 @@ canvas{
 }
 
 .formula{
-
   margin-top:1rem;
 
   background:rgba(46,204,113,.06);
@@ -227,29 +200,21 @@ canvas{
 }
 
 .controls{
-
   display:grid;
-
   grid-template-columns:1fr 1fr;
-
   gap:1rem;
-
   margin-top:1.2rem;
 }
 
 @media(max-width:700px){
-
   .controls{
     grid-template-columns:1fr;
   }
 }
 
 .control label{
-
   display:flex;
-
   justify-content:space-between;
-
   margin-bottom:8px;
 
   color:var(--muted);
@@ -258,14 +223,11 @@ canvas{
 }
 
 .control span{
-
   color:var(--green);
-
   font-family:'Space Mono',monospace;
 }
 
 input[type=range]{
-
   width:100%;
 
   appearance:none;
@@ -278,7 +240,6 @@ input[type=range]{
 }
 
 input[type=range]::-webkit-slider-thumb{
-
   appearance:none;
 
   width:18px;
@@ -294,18 +255,13 @@ input[type=range]::-webkit-slider-thumb{
 }
 
 .metrics{
-
   display:flex;
-
   flex-wrap:wrap;
-
   gap:.6rem;
-
   margin-top:1.2rem;
 }
 
 .metric{
-
   padding:7px 12px;
 
   border-radius:999px;
@@ -318,37 +274,27 @@ input[type=range]::-webkit-slider-thumb{
 }
 
 .metric.green{
-
   background:rgba(46,204,113,.12);
-
   color:#96f0bc;
 }
 
 .metric.blue{
-
   background:rgba(52,152,219,.12);
-
   color:#9bd9ff;
 }
 
 .metric.orange{
-
   background:rgba(243,156,18,.12);
-
   color:#ffd08b;
 }
 
 .presets{
-
   display:grid;
-
   grid-template-columns:1fr 1fr;
-
   gap:.8rem;
 }
 
 .preset{
-
   background:rgba(255,255,255,.04);
 
   border:1px solid rgba(255,255,255,.06);
@@ -363,39 +309,28 @@ input[type=range]::-webkit-slider-thumb{
 }
 
 .preset:hover{
-
   transform:translateY(-2px);
-
   border-color:rgba(46,204,113,.4);
 }
 
 .preset.active{
-
   background:rgba(46,204,113,.1);
-
   border-color:var(--green);
 }
 
 .preset-name{
-
   font-weight:700;
-
   margin-bottom:5px;
-
   font-size:13px;
 }
 
 .preset-type{
-
   font-size:11px;
-
   color:var(--muted);
-
   font-family:'Space Mono',monospace;
 }
 
 .panel{
-
   margin-top:1.4rem;
 
   border-top:1px solid var(--border);
@@ -404,36 +339,25 @@ input[type=range]::-webkit-slider-thumb{
 }
 
 .panel h3{
-
   color:var(--green);
-
   margin-bottom:.7rem;
 }
 
 .panel p{
-
   color:var(--muted);
-
   line-height:1.7;
-
   font-size:14px;
 }
 
 .buttons{
-
   display:flex;
-
   gap:.8rem;
-
   margin-top:1.3rem;
-
   flex-wrap:wrap;
 }
 
 button{
-
   border:none;
-
   cursor:pointer;
 
   border-radius:12px;
@@ -446,19 +370,15 @@ button{
 }
 
 .btn-primary{
-
   background:var(--green);
-
   color:#04121f;
 }
 
 .btn-primary:hover{
-
   transform:translateY(-2px);
 }
 
 .btn-secondary{
-
   background:rgba(255,255,255,.06);
 
   color:var(--white);
@@ -467,7 +387,6 @@ button{
 }
 
 footer{
-
   margin-top:2rem;
 
   text-align:center;
@@ -519,7 +438,7 @@ footer{
     <canvas id="waveCanvas"></canvas>
 
     <div class="formula" id="formula">
-      F(t)=4.0·sin(2π·4.0·t)+0.0
+      F(t)=0.4·sin(2π·0.8·t)+0.0
     </div>
 
     <div class="controls">
@@ -527,17 +446,17 @@ footer{
       <div class="control">
         <label>
           Amplitud A (°)
-          <span id="aVal">4.0</span>
+          <span id="aVal">0.4</span>
         </label>
-        <input id="amp" type="range" min="0.1" max="10" step="0.1" value="4">
+        <input id="amp" type="range" min="0.1" max="10" step="0.1" value="0.4">
       </div>
 
       <div class="control">
         <label>
           Frecuencia f (Hz)
-          <span id="fVal">4.0</span>
+          <span id="fVal">0.8</span>
         </label>
-        <input id="freq" type="range" min="0.1" max="12" step="0.1" value="4">
+        <input id="freq" type="range" min="0.1" max="12" step="0.1" value="0.8">
       </div>
 
       <div class="control">
@@ -603,11 +522,11 @@ footer{
     <div class="panel">
 
       <h3 id="diagTitle">
-        Pendular Horizontal
+        Normal
       </h3>
 
       <p id="diagDesc">
-        Oscilación sinusoidal simétrica compatible con lesiones de tronco encefálico y esclerosis múltiple.
+        Movimiento ocular fisiológico normal. Oscilación de muy baja amplitud y frecuencia, sin evidencia de patología neurológica.
       </p>
 
     </div>
@@ -650,13 +569,13 @@ fftCtx.imageSmoothingEnabled = true;
 
 const state = {
 
-  A:4,
-  f:4,
+  A:0.4,
+  f:0.8,
   phi:0,
   B:0,
 
   mode:'pendular',
-  color:'#2ecc71'
+  color:'#95a5a6'
 };
 
 /* =========================================================
@@ -664,6 +583,17 @@ const state = {
 ========================================================= */
 
 const presets = [
+
+{
+  name:'Normal',
+  type:'pendular',
+  A:0.4,
+  f:0.8,
+  phi:0,
+  B:0,
+  color:'#95a5a6',
+  desc:'Movimiento ocular fisiológico normal. Oscilación de muy baja amplitud y frecuencia, sin evidencia de patología neurológica.'
+},
 
 {
   name:'Pendular Horiz.',
@@ -746,7 +676,6 @@ function pendular(t){
          ) + state.B;
 }
 
-/* realistic jerk nystagmus */
 function jerk(t){
 
   const T = 1/state.f;
@@ -792,7 +721,7 @@ function drawGrid(ctx,w,h){
 
     ctx.beginPath();
     ctx.moveTo(0,y);
-    ctx.lineTo(w,y);
+    ctx.lineTo(w,h);
     ctx.stroke();
   }
 
@@ -869,7 +798,6 @@ function drawFFT(){
     );
 
     if(state.mode==='jerk'){
-
       amp += i%2===0 ? .25 : 0;
     }
 
