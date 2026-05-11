@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Nistagmo — Simulador Neurofisiológico Avanzado</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+
+  --bg:#07111f;
+  --bg2:#0c1d36;
+
+  --card:rgba(255,255,255,0.04);
+  --border:rgba(255,255,255,0.08);
+
+  --green:#2ecc71;
+  --green2:#27ae60;
+
+  --blue:#3498db;
+  --orange:#f39c12;
+  --violet:#9b59b6;
+
+  --white:#f5f7ff;
+  --muted:#8ea7c9;
+
+  --shadow:0 0 25px rgba(46,204,113,.12);
+
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+
+  background:
+    radial-gradient(circle at top left,#173865 0%,transparent 28%),
+    radial-gradient(circle at bottom right,#10284c 0%,transparent 28%),
+    var(--bg);
+
+  color:var(--white);
+  font-family:'Inter',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+body::before{
+
+  content:'';
+  position:fixed;
+  inset:0;
+
+  background-image:
+    linear-gradient(rgba(46,204,113,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(46,204,113,.03) 1px, transparent 1px);
+
+  background-size:42px 42px;
+
+  pointer-events:none;
+}
+
+.container{
+
+  width:min(1400px,95%);
+  margin:auto;
+  padding:2rem 0 4rem;
+  position:relative;
+  z-index:1;
+}
+
+header{
+
+  margin-bottom:2rem;
+  text-align:center;
+}
+
+.tag{
+
+  display:inline-block;
+
+  border:1px solid rgba(46,204,113,.4);
+
+  color:var(--green);
+
+  font-family:'Space Mono',monospace;
+
+  font-size:11px;
+  letter-spacing:.14em;
+
+  padding:5px 12px;
+
+  border-radius:5px;
+
+  margin-bottom:1rem;
+}
+
+h1{
+
+  font-size:clamp(2rem,5vw,4rem);
+
+  line-height:1.05;
+
+  margin-bottom:1rem;
+}
+
+h1 span{
+  color:var(--green);
+}
+
+.subtitle{
+
+  color:var(--muted);
+
+  font-size:15px;
+}
+
+.layout{
+
+  display:grid;
+
+  grid-template-columns:1fr 360px;
+
+  gap:1.5rem;
+}
+
+@media(max-width:1100px){
+
+  .layout{
+    grid-template-columns:1fr;
+  }
+}
+
+.card{
+
+  background:var(--card);
+
+  border:1px solid var(--border);
+
+  border-radius:22px;
+
+  padding:1.4rem;
+
+  backdrop-filter:blur(10px);
+
+  box-shadow:var(--shadow);
+}
+
+.section{
+
+  display:flex;
+  align-items:center;
+  gap:1rem;
+
+  margin-bottom:1rem;
+}
+
+.section-num{
+
+  font-family:'Space Mono',monospace;
+
+  color:var(--green);
+
+  border:1px solid rgba(46,204,113,.4);
+
+  background:rgba(46,204,113,.08);
+
+  padding:4px 10px;
+
+  border-radius:5px;
+
+  font-size:12px;
+}
+
+.section h2{
+
+  font-size:18px;
+}
+
+canvas{
+
+  width:100%;
+  display:block;
+
+  border-radius:16px;
+
+  background:rgba(0,0,0,.28);
+
+  border:1px solid rgba(255,255,255,.05);
+}
+
+#waveCanvas{
+  height:360px;
+}
+
+#fftCanvas{
+  height:140px;
+  margin-top:1rem;
+}
+
+.formula{
+
+  margin-top:1rem;
+
+  background:rgba(46,204,113,.06);
+
+  border:1px solid rgba(46,204,113,.18);
+
+  border-radius:12px;
+
+  padding:1rem;
+
+  text-align:center;
+
+  font-family:'Space Mono',monospace;
+
+  color:#a8f5c7;
+
+  overflow:auto;
+}
+
+.controls{
+
+  display:grid;
+
+  grid-template-columns:1fr 1fr;
+
+  gap:1rem;
+
+  margin-top:1.2rem;
+}
+
+@media(max-width:700px){
+
+  .controls{
+    grid-template-columns:1fr;
+  }
+}
+
+.control label{
+
+  display:flex;
+
+  justify-content:space-between;
+
+  margin-bottom:8px;
+
+  color:var(--muted);
+
+  font-size:13px;
+}
+
+.control span{
+
+  color:var(--green);
+
+  font-family:'Space Mono',monospace;
+}
+
+input[type=range]{
+
+  width:100%;
+
+  appearance:none;
+
+  height:5px;
+
+  border-radius:999px;
+
+  background:rgba(255,255,255,.1);
+}
+
+input[type=range]::-webkit-slider-thumb{
+
+  appearance:none;
+
+  width:18px;
+  height:18px;
+
+  border-radius:50%;
+
+  background:var(--green);
+
+  border:2px solid var(--bg2);
+
+  cursor:pointer;
+}
+
+.metrics{
+
+  display:flex;
+
+  flex-wrap:wrap;
+
+  gap:.6rem;
+
+  margin-top:1.2rem;
+}
+
+.metric{
+
+  padding:7px 12px;
+
+  border-radius:999px;
+
+  font-size:11px;
+
+  font-family:'Space Mono',monospace;
+
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.metric.green{
+
+  background:rgba(46,204,113,.12);
+
+  color:#96f0bc;
+}
+
+.metric.blue{
+
+  background:rgba(52,152,219,.12);
+
+  color:#9bd9ff;
+}
+
+.metric.orange{
+
+  background:rgba(243,156,18,.12);
+
+  color:#ffd08b;
+}
+
+.presets{
+
+  display:grid;
+
+  grid-template-columns:1fr 1fr;
+
+  gap:.8rem;
+}
+
+.preset{
+
+  background:rgba(255,255,255,.04);
+
+  border:1px solid rgba(255,255,255,.06);
+
+  border-radius:14px;
+
+  padding:1rem;
+
+  cursor:pointer;
+
+  transition:.18s;
+}
+
+.preset:hover{
+
+  transform:translateY(-2px);
+
+  border-color:rgba(46,204,113,.4);
+}
+
+.preset.active{
+
+  background:rgba(46,204,113,.1);
+
+  border-color:var(--green);
+}
+
+.preset-name{
+
+  font-weight:700;
+
+  margin-bottom:5px;
+
+  font-size:13px;
+}
+
+.preset-type{
+
+  font-size:11px;
+
+  color:var(--muted);
+
+  font-family:'Space Mono',monospace;
+}
+
+.panel{
+
+  margin-top:1.4rem;
+
+  border-top:1px solid var(--border);
+
+  padding-top:1.2rem;
+}
+
+.panel h3{
+
+  color:var(--green);
+
+  margin-bottom:.7rem;
+}
+
+.panel p{
+
+  color:var(--muted);
+
+  line-height:1.7;
+
+  font-size:14px;
+}
+
+.buttons{
+
+  display:flex;
+
+  gap:.8rem;
+
+  margin-top:1.3rem;
+
+  flex-wrap:wrap;
+}
+
+button{
+
+  border:none;
+
+  cursor:pointer;
+
+  border-radius:12px;
+
+  padding:.8rem 1rem;
+
+  font-weight:600;
+
+  transition:.18s;
+}
+
+.btn-primary{
+
+  background:var(--green);
+
+  color:#04121f;
+}
+
+.btn-primary:hover{
+
+  transform:translateY(-2px);
+}
+
+.btn-secondary{
+
+  background:rgba(255,255,255,.06);
+
+  color:var(--white);
+
+  border:1px solid rgba(255,255,255,.08);
+}
+
+footer{
+
+  margin-top:2rem;
+
+  text-align:center;
+
+  border-top:1px solid var(--border);
+
+  padding-top:2rem;
+
+  color:var(--muted);
+
+  font-size:13px;
+
+  line-height:1.8;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+
+  <div class="tag">
+    UDD · Ingeniería Civil en Biomedicina · Matemática Aplicada
+  </div>
+
+  <h1>
+    Simulador de <span>Nistagmo Neurofisiológico</span>
+  </h1>
+
+  <div class="subtitle">
+    Visualización avanzada de oscilaciones oculomotoras y análisis dinámico espectral
+  </div>
+
+</header>
+
+<div class="layout">
+
+  <!-- LEFT -->
+  <div class="card">
+
+    <div class="section">
+      <div class="section-num">01</div>
+      <h2>Modelo dinámico</h2>
+    </div>
+
+    <canvas id="waveCanvas"></canvas>
+
+    <div class="formula" id="formula">
+      F(t)=4.0·sin(2π·4.0·t)+0.0
+    </div>
+
+    <div class="controls">
+
+      <div class="control">
+        <label>
+          Amplitud A (°)
+          <span id="aVal">4.0</span>
+        </label>
+        <input id="amp" type="range" min="0.1" max="10" step="0.1" value="4">
+      </div>
+
+      <div class="control">
+        <label>
+          Frecuencia f (Hz)
+          <span id="fVal">4.0</span>
+        </label>
+        <input id="freq" type="range" min="0.1" max="12" step="0.1" value="4">
+      </div>
+
+      <div class="control">
+        <label>
+          Desfase φ
+          <span id="pVal">0.0</span>
+        </label>
+        <input id="phase" type="range" min="0" max="6.28" step="0.01" value="0">
+      </div>
+
+      <div class="control">
+        <label>
+          Offset B
+          <span id="bVal">0.0</span>
+        </label>
+        <input id="offset" type="range" min="-5" max="5" step="0.1" value="0">
+      </div>
+
+    </div>
+
+    <div class="metrics">
+
+      <div class="metric green">
+        T = <span id="period"></span>s
+      </div>
+
+      <div class="metric blue">
+        ω = <span id="omega"></span> rad/s
+      </div>
+
+      <div class="metric orange">
+        RMS = <span id="rms"></span>
+      </div>
+
+    </div>
+
+    <canvas id="fftCanvas"></canvas>
+
+    <div class="buttons">
+
+      <button class="btn-primary" id="downloadBtn">
+        Exportar PNG
+      </button>
+
+      <button class="btn-secondary" id="fullscreenBtn">
+        Pantalla completa
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- RIGHT -->
+  <div class="card">
+
+    <div class="section">
+      <div class="section-num">02</div>
+      <h2>Patologías clínicas</h2>
+    </div>
+
+    <div class="presets" id="presets"></div>
+
+    <div class="panel">
+
+      <h3 id="diagTitle">
+        Pendular Horizontal
+      </h3>
+
+      <p id="diagDesc">
+        Oscilación sinusoidal simétrica compatible con lesiones de tronco encefálico y esclerosis múltiple.
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+
+  <strong>Investigadores:</strong>
+  Ignacio Sandoval · Agustín Mestre · Franco Bistolfi
+
+  <br>
+
+  Gustavo Adolfo Castro Palominos · UDD 2025
+
+</footer>
+
+</div>
+
+<script>
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const waveCanvas = document.getElementById('waveCanvas');
+const waveCtx = waveCanvas.getContext('2d');
+
+const fftCanvas = document.getElementById('fftCanvas');
+const fftCtx = fftCanvas.getContext('2d');
+
+waveCtx.imageSmoothingEnabled = true;
+fftCtx.imageSmoothingEnabled = true;
+
+/* =========================================================
+   STATE
+========================================================= */
+
+const state = {
+
+  A:4,
+  f:4,
+  phi:0,
+  B:0,
+
+  mode:'pendular',
+  color:'#2ecc71'
+};
+
+/* =========================================================
+   PRESETS
+========================================================= */
+
+const presets = [
+
+{
+  name:'Pendular Horiz.',
+  type:'pendular',
+  A:4,
+  f:4,
+  phi:0,
+  B:0,
+  color:'#2ecc71',
+  desc:'Oscilación sinusoidal simétrica compatible con lesiones de tronco encefálico y esclerosis múltiple.'
+},
+
+{
+  name:'Pendular Vert.',
+  type:'pendular',
+  A:3,
+  f:2,
+  phi:0,
+  B:0,
+  color:'#3498db',
+  desc:'Movimiento vertical asociado a daño cerebeloso u oliva inferior.'
+},
+
+{
+  name:'Jerk Horizontal',
+  type:'jerk',
+  A:5,
+  f:3,
+  phi:0,
+  B:1,
+  color:'#f39c12',
+  desc:'Nistagmo de resorte fisiológicamente más realista con fase lenta y sácada correctiva rápida.'
+},
+
+{
+  name:'Jerk Vertical',
+  type:'jerk',
+  A:4,
+  f:2,
+  phi:0,
+  B:1,
+  color:'#9b59b6',
+  desc:'Patrón vertical poco frecuente asociado a cerebelo y tronco encefálico.'
+}
+
+];
+
+/* =========================================================
+   RESIZE
+========================================================= */
+
+function resizeCanvas(){
+
+  const dpr = window.devicePixelRatio || 1;
+
+  [waveCanvas, fftCanvas].forEach(c=>{
+
+    const rect = c.getBoundingClientRect();
+
+    c.width = rect.width * dpr;
+    c.height = rect.height * dpr;
+
+    const ctx = c.getContext('2d');
+
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  });
+}
+
+window.addEventListener('resize', resizeCanvas);
+
+/* =========================================================
+   SIGNALS
+========================================================= */
+
+function pendular(t){
+
+  return state.A *
+         Math.sin(
+           2*Math.PI*state.f*t + state.phi
+         ) + state.B;
+}
+
+/* realistic jerk nystagmus */
+function jerk(t){
+
+  const T = 1/state.f;
+
+  const phase = (t % T)/T;
+
+  if(phase < 0.82){
+
+    return state.B + state.A * (phase / 0.82);
+
+  }else{
+
+    return state.B + state.A
+      - state.A * ((phase - 0.82)/0.18);
+  }
+}
+
+function signal(t){
+
+  return state.mode === 'jerk'
+    ? jerk(t)
+    : pendular(t);
+}
+
+/* =========================================================
+   GRID
+========================================================= */
+
+function drawGrid(ctx,w,h){
+
+  ctx.strokeStyle='rgba(255,255,255,.05)';
+  ctx.lineWidth=1;
+
+  for(let x=0;x<w;x+=50){
+
+    ctx.beginPath();
+    ctx.moveTo(x,0);
+    ctx.lineTo(x,h);
+    ctx.stroke();
+  }
+
+  for(let y=0;y<h;y+=50){
+
+    ctx.beginPath();
+    ctx.moveTo(0,y);
+    ctx.lineTo(w,y);
+    ctx.stroke();
+  }
+
+  ctx.strokeStyle='rgba(255,255,255,.15)';
+
+  ctx.beginPath();
+  ctx.moveTo(0,h/2);
+  ctx.lineTo(w,h/2);
+  ctx.stroke();
+}
+
+/* =========================================================
+   MAIN SIGNAL
+========================================================= */
+
+function drawWave(time){
+
+  const w = waveCanvas.clientWidth;
+  const h = waveCanvas.clientHeight;
+
+  waveCtx.clearRect(0,0,w,h);
+
+  drawGrid(waveCtx,w,h);
+
+  waveCtx.beginPath();
+
+  const duration = 2.5;
+
+  for(let x=0;x<=w;x++){
+
+    const t = time + (x/w)*duration;
+
+    const yVal = signal(t);
+
+    const y = h/2 - (yVal/12)*(h/2.2);
+
+    if(x===0){
+      waveCtx.moveTo(x,y);
+    }else{
+      waveCtx.lineTo(x,y);
+    }
+  }
+
+  waveCtx.strokeStyle = state.color;
+  waveCtx.lineWidth = 3;
+
+  waveCtx.shadowBlur = 18;
+  waveCtx.shadowColor = state.color;
+
+  waveCtx.stroke();
+
+  waveCtx.shadowBlur = 0;
+}
+
+/* =========================================================
+   FFT VISUALIZATION
+========================================================= */
+
+function drawFFT(){
+
+  const w = fftCanvas.clientWidth;
+  const h = fftCanvas.clientHeight;
+
+  fftCtx.clearRect(0,0,w,h);
+
+  const bars = 12;
+
+  for(let i=0;i<bars;i++){
+
+    const freq = i+1;
+
+    let amp = Math.exp(
+      -Math.abs(freq-state.f)
+    );
+
+    if(state.mode==='jerk'){
+
+      amp += i%2===0 ? .25 : 0;
+    }
+
+    const bh = amp * h * .8;
+
+    fftCtx.fillStyle = state.color;
+
+    fftCtx.fillRect(
+      i*(w/bars)+10,
+      h-bh,
+      (w/bars)-14,
+      bh
+    );
+
+    fftCtx.fillStyle='#8ea7c9';
+
+    fftCtx.font='10px Space Mono';
+
+    fftCtx.fillText(
+      freq+'Hz',
+      i*(w/bars)+12,
+      h-5
+    );
+  }
+}
+
+/* =========================================================
+   UI
+========================================================= */
+
+function updateUI(){
+
+  aVal.textContent = state.A.toFixed(1);
+  fVal.textContent = state.f.toFixed(1);
+  pVal.textContent = state.phi.toFixed(2);
+  bVal.textContent = state.B.toFixed(1);
+
+  period.textContent = (1/state.f).toFixed(2);
+
+  omega.textContent =
+    (2*Math.PI*state.f).toFixed(1);
+
+  rms.textContent =
+    Math.sqrt((state.A**2)/2).toFixed(2);
+
+  formula.textContent =
+    `F(t) = ${state.A.toFixed(1)} · sin(2π · ${state.f.toFixed(1)} · t + ${state.phi.toFixed(2)}) + ${state.B.toFixed(1)}`;
+}
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+function animate(ts){
+
+  const t = ts/1000;
+
+  drawWave(t);
+  drawFFT();
+
+  requestAnimationFrame(animate);
+}
+
+/* =========================================================
+   PRESETS UI
+========================================================= */
+
+function buildPresets(){
+
+  const wrap = document.getElementById('presets');
+
+  presets.forEach((p,index)=>{
+
+    const div = document.createElement('div');
+
+    div.className='preset';
+
+    if(index===0){
+      div.classList.add('active');
+    }
+
+    div.innerHTML=`
+
+      <div class="preset-name">
+        ${p.name}
+      </div>
+
+      <div class="preset-type">
+        ${p.type.toUpperCase()}
+      </div>
+    `;
+
+    div.onclick=()=>{
+
+      document
+        .querySelectorAll('.preset')
+        .forEach(x=>x.classList.remove('active'));
+
+      div.classList.add('active');
+
+      state.A=p.A;
+      state.f=p.f;
+      state.phi=p.phi;
+      state.B=p.B;
+
+      state.mode=p.type;
+      state.color=p.color;
+
+      amp.value=p.A;
+      freq.value=p.f;
+      phase.value=p.phi;
+      offset.value=p.B;
+
+      diagTitle.textContent=p.name;
+      diagDesc.textContent=p.desc;
+
+      updateUI();
+    };
+
+    wrap.appendChild(div);
+  });
+}
+
+/* =========================================================
+   EXPORT PNG
+========================================================= */
+
+downloadBtn.onclick=()=>{
+
+  const link=document.createElement('a');
+
+  link.download='nistagmo.png';
+
+  link.href=waveCanvas.toDataURL();
+
+  link.click();
+};
+
+/* =========================================================
+   FULLSCREEN
+========================================================= */
+
+fullscreenBtn.onclick=()=>{
+
+  if(!document.fullscreenElement){
+
+    document.documentElement.requestFullscreen();
+
+  }else{
+
+    document.exitFullscreen();
+  }
+};
+
+/* =========================================================
+   SLIDERS
+========================================================= */
+
+amp.oninput=e=>{
+  state.A=parseFloat(e.target.value);
+  updateUI();
+};
+
+freq.oninput=e=>{
+  state.f=parseFloat(e.target.value);
+  updateUI();
+};
+
+phase.oninput=e=>{
+  state.phi=parseFloat(e.target.value);
+  updateUI();
+};
+
+offset.oninput=e=>{
+  state.B=parseFloat(e.target.value);
+  updateUI();
+};
+
+/* =========================================================
+   INIT
+========================================================= */
+
+window.onload=()=>{
+
+  resizeCanvas();
+
+  buildPresets();
+
+  updateUI();
+
+  requestAnimationFrame(animate);
+};
+
+</script>
+
+</body>
+</html>
